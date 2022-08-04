@@ -28,7 +28,7 @@ QEMU_FLAGS= -cdrom out/SimpleOS.iso -drive file=ext2.img,format=raw
 # assembler flags
 ASM_FLAGS = -f elf32
 # compiler flags
-CC_FLAGS = $(INCLUDE) $(DEFINES) -m32 -std=gnu99 -ffreestanding -Wall -Wextra
+CC_FLAGS = $(INCLUDE) $(DEFINES) -m32 -std=gnu99 -ffreestanding -Wall -Wextra -fno-stack-protector
 # linker flags, for linker add linker.ld file too
 LD_FLAGS = -m elf_i386 -T $(CONFIG)/linker.ld -nostdlib --allow-multiple-definition
 
@@ -47,7 +47,6 @@ OBJECTS=$(ASM_OBJ)/entry.o $(ASM_OBJ)/load_gdt.o\
 		$(OBJ)/keyboard.o $(OBJ)/mouse.o\
 		$(OBJ)/kernel.o\
 		$(OBJ)/gui.o\
-		$(OBJ)/hd.o\
 		$(OBJ)/ext2.o\
 		$(OBJ)/ide.o\
 		$(OBJ)/tss.o\
@@ -188,6 +187,9 @@ $(OBJ)/pmm.o : $(SRC)/pmm.c
 
 run:
 	$(QEMU) $(QEMU_FLAGS)
+
+runDebug:
+	$(QEMU) $(QEMU_FLAGS) -S -s
 
 clean:
 	rm -f $(OBJ)/*.o

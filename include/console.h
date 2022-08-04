@@ -31,5 +31,3 @@ void getstr(char *buffer);
 void getstr_bound(char *buffer, uint8 bound);
 
 #endif
-
-#endif

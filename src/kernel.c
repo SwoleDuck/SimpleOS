@@ -7,7 +7,6 @@
 #include "mouse.h"
 #include "multiboot.h"
 #include "gui.h"
-#include "hd.h"
 #include "ext2.h"
 #include "ide.h"
 #include "tss.h" // The tss is kinda buggy rn but keep it here for later
@@ -80,6 +79,9 @@ void display_kernel_memory_map(KERNEL_MEMORY_MAP *kmap) {
 }
 void kmain(unsigned long magic, unsigned long addr) {
     MULTIBOOT_INFO *mboot_info;
+
+    init_sse();
+
     gdt_init();
     idt_init();
     console_init(COLOR_WHITE, COLOR_BLACK);
@@ -113,6 +115,18 @@ void kmain(unsigned long magic, unsigned long addr) {
     dump_fs_info();
     printf("\nEND OF KERNEL!");
     
+}
+
+void init_sse(){
+	asm volatile(
+		"mov %cr0, %eax\n"
+		"and $0xfffb, %ax\n"
+		"or $0x2, %ax\n"
+		"mov %eax, %cr0\n"
+		"mov %cr4, %eax\n"
+		"or $0x600, %ax\n"
+		"mov %eax, %cr4\n"
+	);
 }
 
 
